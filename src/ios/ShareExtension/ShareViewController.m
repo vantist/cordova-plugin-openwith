@@ -105,7 +105,6 @@
 }
 
 - (void) didSelectPost {
-
     [self setup];
     [self debug:@"[didSelectPost]"];
 
@@ -124,56 +123,90 @@
                 if([(NSObject*)item isKindOfClass:[UIImage class]]) {
                     data = UIImagePNGRepresentation((UIImage*)item);
                 }
-
-                NSString *suggestedName = @"";
-                if ([itemProvider respondsToSelector:NSSelectorFromString(@"getSuggestedName")]) {
-                    suggestedName = [itemProvider valueForKey:@"suggestedName"];
-                }
-
-                NSString *uti = @"";
-                NSArray<NSString *> *utis = [NSArray new];
-                if ([itemProvider.registeredTypeIdentifiers count] > 0) {
-                    uti = itemProvider.registeredTypeIdentifiers[0];
-                    utis = itemProvider.registeredTypeIdentifiers;
-                }
-                else {
-                    uti = SHAREEXT_UNIFORM_TYPE_IDENTIFIER;
-                }
-                NSDictionary *dict = @{
-                    @"text": self.contentText,
-                    @"backURL": self.backURL,
-                    @"data" : data,
-                    @"uti": uti,
-                    @"utis": utis,
-                    @"name": suggestedName
-                };
-                [self.userDefaults setObject:dict forKey:@"image"];
-                [self.userDefaults synchronize];
-
-                // Emit a URL that opens the cordova app
-                NSString *url = [NSString stringWithFormat:@"%@://image", SHAREEXT_URL_SCHEME];
-
-                // Not allowed:
-                // [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
                 
-                // Crashes:
-                // [self.extensionContext openURL:[NSURL URLWithString:url] completionHandler:nil];
-                
-                // From https://stackoverflow.com/a/25750229/2343390
-                // Reported not to work since iOS 8.3
-                // NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
-                // [self.webView loadRequest:request];
-                
-                [self openURL:[NSURL URLWithString:url]];
-
-                // Inform the host that we're done, so it un-blocks its UI.
-                [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+                if (item){
+                    [self finishSelectingPost:itemProvider data:data];
+                }else{
+                    
+                    NSItemProviderCompletionHandler imageHandler = ^(UIImage *item, NSError *error) {
+                        NSData *newData = [[NSData alloc] init];
+                        if([(NSObject*)item isKindOfClass:[UIImage class]]) {
+                            newData = UIImagePNGRepresentation((UIImage*)item);
+                        }
+                        [self finishSelectingPost:itemProvider data:newData];
+                    };
+                    
+                    NSItemProviderCompletionHandler urlHandler = ^(NSURL *item, NSError *error) {
+                        NSData *newData = [[NSData alloc] init];
+                        if([(NSObject*)item isKindOfClass:[NSURL class]]) {
+                            newData = [NSData dataWithContentsOfURL:(NSURL*)item];
+                        }
+                        [self finishSelectingPost:itemProvider data:data];
+                    };
+                    
+                    if([itemProvider hasItemConformingToTypeIdentifier:@"public.image"]) {
+                        [itemProvider loadItemForTypeIdentifier:@"public.image" options:nil completionHandler:imageHandler];
+                    } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.url"]) {
+                        [itemProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:urlHandler];
+                    } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.movie"]) {
+                        [itemProvider loadItemForTypeIdentifier:@"public.movie" options:nil completionHandler:urlHandler];
+                    } else {
+                        [self debug:[NSString stringWithFormat:@"Unknown attachment type = %@", itemProvider]];
+                    }
+                    
+                }
             }];
 
             return;
         }
     }
 
+    // Inform the host that we're done, so it un-blocks its UI.
+    [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+}
+
+- (void) finishSelectingPost:(NSItemProvider*)itemProvider data:(NSData*)data {
+    NSString *suggestedName = @"";
+    if ([itemProvider respondsToSelector:NSSelectorFromString(@"getSuggestedName")]) {
+        suggestedName = [itemProvider valueForKey:@"suggestedName"];
+    }
+    
+    NSString *uti = @"";
+    NSArray<NSString *> *utis = [NSArray new];
+    if ([itemProvider.registeredTypeIdentifiers count] > 0) {
+        uti = itemProvider.registeredTypeIdentifiers[0];
+        utis = itemProvider.registeredTypeIdentifiers;
+    }
+    else {
+        uti = SHAREEXT_UNIFORM_TYPE_IDENTIFIER;
+    }
+    NSDictionary *dict = @{
+                           @"text": self.contentText,
+                           @"backURL": self.backURL,
+                           @"data" : data,
+                           @"uti": uti,
+                           @"utis": utis,
+                           @"name": suggestedName
+                           };
+    [self.userDefaults setObject:dict forKey:@"image"];
+    [self.userDefaults synchronize];
+    
+    // Emit a URL that opens the cordova app
+    NSString *url = [NSString stringWithFormat:@"%@://image", SHAREEXT_URL_SCHEME];
+    
+    // Not allowed:
+    // [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+    
+    // Crashes:
+    // [self.extensionContext openURL:[NSURL URLWithString:url] completionHandler:nil];
+    
+    // From https://stackoverflow.com/a/25750229/2343390
+    // Reported not to work since iOS 8.3
+    // NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
+    // [self.webView loadRequest:request];
+    
+    [self openURL:[NSURL URLWithString:url]];
+    
     // Inform the host that we're done, so it un-blocks its UI.
     [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
 }
