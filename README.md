@@ -1,7 +1,6 @@
 # Josh's forked cordova-plugin-openwith repo
 - Has everything in https://github.com/j3k0/cordova-plugin-openwith
 - Forked for iOS11 & iOS12 support as well as Cordova 9.0 support
-- Cordova 9.0 support
 
 # cordova-plugin-openwith
 
