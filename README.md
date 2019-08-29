@@ -1,3 +1,8 @@
+# Josh's forked cordova-plugin-openwith repo
+- Has everything in https://github.com/j3k0/cordova-plugin-openwith
+- Forked for iOS11 & iOS12 support as well as Cordova 9.0 support
+- Cordova 9.0 support
+
 # cordova-plugin-openwith
 
 <a href="https://fovea.cc"><img alt="Logo Fovea" src="https://fovea.cc/blog/wp-content/uploads/2017/09/fovea-logo-flat-128.png" height="50" /></a> &amp; <a href="https://www.interactivetools.com"><img alt="Logo InteractiveTools" src="https://www.interactivetools.com/assets/images/header/logo.png" height="59" /></a>
