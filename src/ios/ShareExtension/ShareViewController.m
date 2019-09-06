@@ -116,37 +116,49 @@
             
             [itemProvider loadItemForTypeIdentifier:SHAREEXT_UNIFORM_TYPE_IDENTIFIER options:nil completionHandler: ^(id<NSSecureCoding> item, NSError *error) {
                 
-                NSData *data = [[NSData alloc] init];
-                if([(NSObject*)item isKindOfClass:[NSURL class]]) {
-                    data = [NSData dataWithContentsOfURL:(NSURL*)item];
-                }
-                if([(NSObject*)item isKindOfClass:[UIImage class]]) {
-                    data = UIImagePNGRepresentation((UIImage*)item);
-                }
-                
-                if (item){
-                    [self finishSelectingPost:itemProvider data:data];
+                if ([itemProvider hasItemConformingToTypeIdentifier:@"public.url"]){
+                    NSItemProviderCompletionHandler urlHandler = ^(NSURL *item, NSError *error) {
+                        
+                        NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString:[item absoluteString]]];
+                        [self finishSelectingPost:itemProvider data:data urlString: [item absoluteString]];
+                    };
+                    
+                    [itemProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:urlHandler];
                 }else{
-                     NSItemProviderCompletionHandler imageHandler = ^(UIImage *item, NSError *error) {
-                        NSData *newData = [[NSData alloc] init];
-                        if([(NSObject*)item isKindOfClass:[UIImage class]]) {
-                            newData = UIImagePNGRepresentation((UIImage*)item);
+                    NSData *data = [[NSData alloc] init];
+                    if([(NSObject*)item isKindOfClass:[NSURL class]]) {
+                        data = [NSData dataWithContentsOfURL:(NSURL*)item];
+                    }
+                    if([(NSObject*)item isKindOfClass:[UIImage class]]) {
+                        data = UIImagePNGRepresentation((UIImage*)item);
+                    }
+                    
+                    if (item){
+                        [self finishSelectingPost:itemProvider data:data urlString: nil];
+                    }else{
+                        
+                        NSItemProviderCompletionHandler imageHandler = ^(UIImage *item, NSError *error) {
+                            NSData *newData = [[NSData alloc] init];
+                            if([(NSObject*)item isKindOfClass:[UIImage class]]) {
+                                newData = UIImagePNGRepresentation((UIImage*)item);
+                            }
+                            [self finishSelectingPost:itemProvider data:newData urlString: nil];
+                        };
+                        
+                        NSItemProviderCompletionHandler urlHandler = ^(NSData *item, NSError *error) {
+                            [self finishSelectingPost:itemProvider data:item urlString:nil];
+                        };
+                        
+                        if([itemProvider hasItemConformingToTypeIdentifier:@"public.image"]) {
+                            [itemProvider loadItemForTypeIdentifier:@"public.image" options:nil completionHandler:imageHandler];
+                        } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.url"]) {
+                            [itemProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:urlHandler];
+                        } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.movie"]) {
+                            [itemProvider loadItemForTypeIdentifier:@"public.movie" options:nil completionHandler:urlHandler];
+                        } else {
+                            [self debug:[NSString stringWithFormat:@"Unknown attachment type = %@", itemProvider]];
                         }
-                        [self finishSelectingPost:itemProvider data:newData];
-                    };
-                    
-                    NSItemProviderCompletionHandler dataHandler = ^(NSData *item, NSError *error) {
-                        [self finishSelectingPost:itemProvider data:item];
-                    };
-                    
-                    if([itemProvider hasItemConformingToTypeIdentifier:@"public.image"]) {
-                        [itemProvider loadItemForTypeIdentifier:@"public.image" options:nil completionHandler:imageHandler];
-                    } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.url"]) {
-                        [itemProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:dataHandler];
-                    } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.movie"]) {
-                        [itemProvider loadItemForTypeIdentifier:@"public.movie" options:nil completionHandler:dataHandler];
-                    } else {
-                        [self debug:[NSString stringWithFormat:@"Unknown attachment type = %@", itemProvider]];
+                        
                     }
                 }
             }];
@@ -159,7 +171,7 @@
     [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
 }
 
-- (void) finishSelectingPost:(NSItemProvider*)itemProvider data:(NSData*)data {
+- (void) finishSelectingPost:(NSItemProvider*)itemProvider data:(NSData*)data urlString:(NSString*)urlString {
     NSString *suggestedName = @"";
     if ([itemProvider respondsToSelector:NSSelectorFromString(@"getSuggestedName")]) {
         suggestedName = [itemProvider valueForKey:@"suggestedName"];
@@ -182,6 +194,18 @@
                            @"utis": utis,
                            @"name": suggestedName
                            };
+    
+    if (urlString != nil) {
+        dict = @{
+           @"text": self.contentText,
+           @"backURL": self.backURL,
+           @"data" : data,
+           @"uti": uti,
+           @"utis": utis,
+           @"name": suggestedName,
+           @"urlString": urlString
+        };
+    }
     [self.userDefaults setObject:dict forKey:@"image"];
     [self.userDefaults synchronize];
     
