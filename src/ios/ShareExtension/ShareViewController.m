@@ -127,8 +127,7 @@
                 if (item){
                     [self finishSelectingPost:itemProvider data:data];
                 }else{
-                    
-                    NSItemProviderCompletionHandler imageHandler = ^(UIImage *item, NSError *error) {
+                     NSItemProviderCompletionHandler imageHandler = ^(UIImage *item, NSError *error) {
                         NSData *newData = [[NSData alloc] init];
                         if([(NSObject*)item isKindOfClass:[UIImage class]]) {
                             newData = UIImagePNGRepresentation((UIImage*)item);
@@ -136,24 +135,19 @@
                         [self finishSelectingPost:itemProvider data:newData];
                     };
                     
-                    NSItemProviderCompletionHandler urlHandler = ^(NSURL *item, NSError *error) {
-                        NSData *newData = [[NSData alloc] init];
-                        if([(NSObject*)item isKindOfClass:[NSURL class]]) {
-                            newData = [NSData dataWithContentsOfURL:(NSURL*)item];
-                        }
-                        [self finishSelectingPost:itemProvider data:data];
+                    NSItemProviderCompletionHandler dataHandler = ^(NSData *item, NSError *error) {
+                        [self finishSelectingPost:itemProvider data:item];
                     };
                     
                     if([itemProvider hasItemConformingToTypeIdentifier:@"public.image"]) {
                         [itemProvider loadItemForTypeIdentifier:@"public.image" options:nil completionHandler:imageHandler];
                     } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.url"]) {
-                        [itemProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:urlHandler];
+                        [itemProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:dataHandler];
                     } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.movie"]) {
-                        [itemProvider loadItemForTypeIdentifier:@"public.movie" options:nil completionHandler:urlHandler];
+                        [itemProvider loadItemForTypeIdentifier:@"public.movie" options:nil completionHandler:dataHandler];
                     } else {
                         [self debug:[NSString stringWithFormat:@"Unknown attachment type = %@", itemProvider]];
                     }
-                    
                 }
             }];
 
