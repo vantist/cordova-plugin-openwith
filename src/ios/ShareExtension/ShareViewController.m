@@ -66,6 +66,10 @@
 - (void) warn:(NSString*)message { [self log:VERBOSITY_WARN message:message]; }
 - (void) error:(NSString*)message { [self log:VERBOSITY_ERROR message:message]; }
 
+- (void)viewDidLoad {
+    [[self navigationController] navigationBar].topItem.rightBarButtonItem.title = @"Add to inbox";
+}
+
 - (void) setup {
     self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:SHAREEXT_GROUP_IDENTIFIER];
     self.verbosityLevel = [self.userDefaults integerForKey:@"verbosityLevel"];
