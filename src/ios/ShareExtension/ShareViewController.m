@@ -67,7 +67,8 @@
 - (void) error:(NSString*)message { [self log:VERBOSITY_ERROR message:message]; }
 
 - (void)viewDidLoad {
-    [[self navigationController] navigationBar].topItem.rightBarButtonItem.title = @"Add to inbox";
+    //Edit "post" button title
+    [[self navigationController] navigationBar].topItem.rightBarButtonItem.title = @"Add to Inbox";
 }
 
 - (void) setup {
@@ -160,6 +161,7 @@
                         } else if([itemProvider hasItemConformingToTypeIdentifier:@"public.movie"]) {
                             [itemProvider loadItemForTypeIdentifier:@"public.movie" options:nil completionHandler:urlHandler];
                         } else {
+                            [itemProvider loadItemForTypeIdentifier:@"public.item" options:nil completionHandler:urlHandler];
                             [self debug:[NSString stringWithFormat:@"Unknown attachment type = %@", itemProvider]];
                         }
                         
