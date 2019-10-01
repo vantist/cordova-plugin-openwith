@@ -121,7 +121,7 @@
             
             [itemProvider loadItemForTypeIdentifier:SHAREEXT_UNIFORM_TYPE_IDENTIFIER options:nil completionHandler: ^(id<NSSecureCoding> item, NSError *error) {
                 
-                if ([itemProvider hasItemConformingToTypeIdentifier:@"public.url"]){
+                if ([itemProvider hasItemConformingToTypeIdentifier:@"public.url"] && ![itemProvider hasItemConformingToTypeIdentifier:@"public.content"]){
                     NSItemProviderCompletionHandler urlHandler = ^(NSURL *item, NSError *error) {
                         
                         NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString:[item absoluteString]]];
