@@ -208,6 +208,52 @@ function printShareExtensionFiles(files) {
   });
 }
 
+function setShareUti(context, preferences) {
+  var json = sharePlistJson(context);
+  var uti = preferences.find(function(preference) {
+    return preference.key === '__UNIFORM_TYPE_IDENTIFIER__';
+  });
+
+  if (uti.value === 'public.image') {
+    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsImageWithMaxCount = 1;
+  } else if (uti.value === 'public.video') {
+    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsMovieWithMaxCount = 1;
+  } else if (uti.value === 'public.url') {
+    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsWebURLWithMaxCount = 1;
+  } else if (uti.value === 'public.plain-text') {
+    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsText = 1;
+  } else if (uti.value === 'public.item') {
+    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsImageWithMaxCount = 1;
+    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsMovieWithMaxCount = 1;
+    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsWebURLWithMaxCount = 1;
+    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsText = 1;
+  } else {
+    console.log('IOS_UNIFORM_TYPE_IDENTIFIER not supported, should be [public.image | public.video | public.url | pulic.item]');
+  }
+
+  setSharePlist(context, json);
+}
+
+function sharePlistJson(context) {
+  var path = sharePlistPath(context);
+  return plistJson(path);
+}
+
+function plistJson(path) {
+  var plist = require('plist');
+  return plist.parse(fs.readFileSync(path, 'utf8'));
+}
+
+function setSharePlist(context, json) {
+  var plist = require('plist');
+  var path = sharePlistPath(context);
+  fs.writeFileSync(path, plist.build(json))
+}
+
+function sharePlistPath(context) {
+  return path.join(iosFolder(context), 'ShareExtension', 'ShareExtension-Info.plist');
+}
+
 console.log('Adding target "' + PLUGIN_ID + '/ShareExtension" to XCode project');
 
 module.exports = function (context) {
@@ -247,6 +293,8 @@ module.exports = function (context) {
     }
 
     if (!target) {
+      setShareUti(context, preferences);
+
       // Add PBXNativeTarget to the project
       target = pbxProject.addTarget('ShareExt', 'app_extension', 'ShareExtension');
       
