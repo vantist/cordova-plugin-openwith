@@ -104,19 +104,6 @@ SOFTWARE.
             <clobbers target="cordova.openwith" />
         </js-module>
 
-        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
-            <intent-filter>
-                <!-- category android:name="android.intent.category.BROWSABLE" / -->
-                <!-- See https://developer.android.com/guide/topics/manifest/data-element.html -->
-                <data android:mimeType="$ANDROID_MIME_TYPE" />
-                <action android:name="android.intent.action.SEND" />
-                $ANDROID_EXTRA_ACTIONS
-                <!-- action android:name="android.intent.action.VIEW" / -->
-                <!-- action android:name="android.intent.action.SEND_MULTIPLE" / -->
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </config-file>
-
         <!-- Cordova >= 3.0.0 -->
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="OpenWithPlugin">
@@ -130,6 +117,9 @@ SOFTWARE.
         <source-file src="src/android/cc/fovea/openwith/PluginResultSender.java" target-dir="src/cc/fovea/openwith" />
         <source-file src="src/android/cc/fovea/openwith/Serializer.java" target-dir="src/cc/fovea/openwith" />
         <source-file src="src/android/cc/fovea/openwith/ByteStreams.java" target-dir="src/cc/fovea/openwith" />
+
+        <hook type="after_plugin_install" src="hooks/androidAddTarget.js" />
+        <hook type="before_plugin_uninstall" src="hooks/androidRemoveTarget.js" />
     </platform>
 
 <!--
