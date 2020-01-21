@@ -88,7 +88,14 @@ SOFTWARE.
 
         <hook type="before_plugin_install" src="hooks/npmInstall.js" />
         <hook type="before_plugin_install" src="hooks/iosCopyShareExtension.js" />
+
+        <hook type="after_plugin_install" src="hooks/iosRemoveTarget.js" />
         <hook type="after_plugin_install" src="hooks/iosAddTarget.js" />
+
+        <!-- Also add target after platform add to avoid cordova cli reset project.pbxproj bug -->
+        <hook type="after_platform_add" src="hooks/iosRemoveTarget.js" />
+        <hook type="after_platform_add" src="hooks/iosAddTarget.js" />
+
         <hook type="before_plugin_uninstall" src="hooks/iosRemoveTarget.js" />
 
         <framework src="MobileCoreServices.framework" />
