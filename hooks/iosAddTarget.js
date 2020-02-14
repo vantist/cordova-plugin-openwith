@@ -305,6 +305,7 @@ module.exports = function(context) {
     // Add development team and provisioning profile
     const PROVISIONING_PROFILE = pluginVariable.get('SHAREEXT_PROVISIONING_PROFILE');
     const DEVELOPMENT_TEAM = pluginVariable.get('SHAREEXT_DEVELOPMENT_TEAM');
+    const CODE_SIGN_IDENTITY = pluginVariable.get('IOS_CODE_SIGN_IDENTITY') || "iPhone Developer";
     console.log('Adding team', DEVELOPMENT_TEAM, 'and provisoning profile', PROVISIONING_PROFILE);
     if (PROVISIONING_PROFILE && DEVELOPMENT_TEAM) {
       const configurations = pbxProject.pbxXCBuildConfigurationSection();
@@ -314,8 +315,9 @@ module.exports = function(context) {
           if (typeof buildSettingsObj['PRODUCT_NAME'] !== 'undefined') {
             const productName = buildSettingsObj['PRODUCT_NAME'];
             if (productName.indexOf('ShareExt') >= 0) {
-              buildSettingsObj['PROVISIONING_PROFILE'] = PROVISIONING_PROFILE;
+              buildSettingsObj['PROVISIONING_PROFILE'] = `"${PROVISIONING_PROFILE}"`;
               buildSettingsObj['DEVELOPMENT_TEAM'] = DEVELOPMENT_TEAM;
+              buildSettingsObj['CODE_SIGN_IDENTITY'] = `"${CODE_SIGN_IDENTITY}"`;
               console.log('Added signing identities for extension!');
             }
           }
