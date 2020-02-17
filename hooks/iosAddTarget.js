@@ -30,7 +30,7 @@
 //
 
 const PLUGIN_ID = 'cc.fovea.cordova.openwith';
-const BUNDLE_SUFFIX = '.shareextension';
+const BUNDLE_SUFFIX = '';
 
 const fs = require('fs');
 const path = require('path');

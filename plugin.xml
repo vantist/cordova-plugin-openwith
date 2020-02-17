@@ -66,7 +66,7 @@ SOFTWARE.
             <array>
                 <dict>
                     <key>CFBundleURLName</key>
-                    <string>cc.fovea.openwith.$IOS_URL_SCHEME.shareextension</string>
+                    <string>cc.fovea.openwith.$IOS_URL_SCHEME</string>
                     <key>CFBundleURLSchemes</key>
                     <array>
                         <string>$IOS_URL_SCHEME</string>
@@ -95,7 +95,7 @@ SOFTWARE.
         <!-- Also add target after platform add to avoid cordova cli reset project.pbxproj bug -->
         <hook type="after_platform_add" src="hooks/iosRemoveTarget.js" />
         <hook type="after_platform_add" src="hooks/iosAddTarget.js" />
-
+        
         <hook type="before_plugin_uninstall" src="hooks/iosRemoveTarget.js" />
 
         <framework src="MobileCoreServices.framework" />
