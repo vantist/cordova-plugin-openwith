@@ -132,9 +132,6 @@ function getPreferences(context, projectName) {
     key: '__DISPLAY_NAME__',
     value: projectName,
   }, {
-    key: '__BUNDLE_IDENTIFIER__',
-    value: plist.CFBundleIdentifier + BUNDLE_SUFFIX,
-  }, {
     key: '__GROUP_IDENTIFIER__',
     value: group,
   }, {
@@ -315,9 +312,11 @@ module.exports = function(context) {
           if (typeof buildSettingsObj['PRODUCT_NAME'] !== 'undefined') {
             const productName = buildSettingsObj['PRODUCT_NAME'];
             if (productName.indexOf('ShareExt') >= 0) {
+              buildSettingsObj['PRODUCT_BUNDLE_IDENTIFIER'] = `$(PRODUCT_BUNDLE_IDENTIFIER)${BUNDLE_SUFFIX}`;
               buildSettingsObj['PROVISIONING_PROFILE'] = `"${PROVISIONING_PROFILE}"`;
               buildSettingsObj['DEVELOPMENT_TEAM'] = DEVELOPMENT_TEAM;
               buildSettingsObj['CODE_SIGN_IDENTITY'] = `"${CODE_SIGN_IDENTITY}"`;
+              buildSettingsObj['TARGETED_DEVICE_FAMILY'] = "1,2";
               console.log('Added signing identities for extension!');
             }
           }
