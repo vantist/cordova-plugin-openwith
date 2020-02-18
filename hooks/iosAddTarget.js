@@ -316,6 +316,7 @@ module.exports = function(context) {
               buildSettingsObj['PROVISIONING_PROFILE'] = `"${PROVISIONING_PROFILE}"`;
               buildSettingsObj['DEVELOPMENT_TEAM'] = DEVELOPMENT_TEAM;
               buildSettingsObj['CODE_SIGN_IDENTITY'] = `"${CODE_SIGN_IDENTITY}"`;
+              buildSettingsObj['TARGETED_DEVICE_FAMILY'] = "1,2";
               console.log('Added signing identities for extension!');
             }
           }
