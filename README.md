@@ -68,9 +68,9 @@ cordova plugin add cc.fovea.cordova.openwith \
 
 | variable | example | notes |
 |---|---|---|
-| `ANDROID_MIME_TYPE` | image/* | **Android only** Mime type of documents you want to share (wildcards accepted). Supports `image/*`, `video/*`, `text/plain` and `*/*` for all three (check [Android's Supporting MIME types](https://developer.android.com/training/sharing/receive.html#supporting-mime-types)) |
+| `ANDROID_MIME_TYPE` | image/* | **Android only** Mime type of documents you want to share (wildcards accepted). Supports `image/*`, ~~`video/*`~~, `text/plain` and `*/*` for all three (check [Android's Supporting MIME types](https://developer.android.com/training/sharing/receive.html#supporting-mime-types)) |
 | `IOS_URL_SCHEME` | uniquelonglowercase | **iOS only** Any random long string of lowercase alphabetical characters |
-| `IOS_UNIFORM_TYPE_IDENTIFIER` | public.image | **iOS only** UTI of documents you want to share. Supports `public.image`, `public.video`, `public.url`, `public.plain-text` and `public.item` for all four (check [Apple's System-Declared UTI](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/UTIRef/Articles/System-DeclaredUniformTypeIdentifiers.html#//apple_ref/doc/uid/TP40009259-SW1)) |
+| `IOS_UNIFORM_TYPE_IDENTIFIER` | public.image | **iOS only** UTI of documents you want to share. Supports `public.image`, ~~`public.video`, `public.url`~~, `public.plain-text` and `public.item` for all (check [Apple's System-Declared UTI](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/UTIRef/Articles/System-DeclaredUniformTypeIdentifiers.html#//apple_ref/doc/uid/TP40009259-SW1)) |
 | `IOS_GROUP_IDENTIFIER` | group.my.app.id | **iOS only** Custom app group name. Default is `group.<YOUR_APP_BUNDLE_ID>.shareextension`. |
 | `IOS_CODE_SIGN_IDENTITY` | iPhone Developer | **iOS only** Code signing identity to use for signing. Should be `iPhone Developer` or `iPhone Distribution`. Default is `iPhone Developer` |
 | `SHAREEXT_PROVISIONING_PROFILE` | 9dfsdf-.... | **iOS only** UUID of provisioning profile for singing |

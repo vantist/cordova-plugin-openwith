@@ -5,7 +5,7 @@ let androidIntentFilterMime;
 function removeShareMime(ANDROID_MIME_TYPE) {
   if (ANDROID_MIME_TYPE === '*/*') {
     androidIntentFilterMime.remove('image/*');
-    androidIntentFilterMime.remove('video/*');
+    // androidIntentFilterMime.remove('video/*');
     androidIntentFilterMime.remove('text/plain');
   } else {
     androidIntentFilterMime.remove(ANDROID_MIME_TYPE);
