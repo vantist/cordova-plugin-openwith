@@ -187,14 +187,14 @@ function setShareUti(context, preferences) {
   if (uti.value === 'public.image') {
     json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsImageWithMaxCount = 1;
   } else if (uti.value === 'public.video') {
-    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsMovieWithMaxCount = 1;
+    // json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsMovieWithMaxCount = 1;
   } else if (uti.value === 'public.url') {
     // json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsWebURLWithMaxCount = 1;
   } else if (uti.value === 'public.plain-text') {
     json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsText = true;
   } else if (uti.value === 'public.item') {
     json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsImageWithMaxCount = 1;
-    json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsMovieWithMaxCount = 1;
+    // json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsMovieWithMaxCount = 1;
     // json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsWebURLWithMaxCount = 1;
     json.NSExtension.NSExtensionAttributes.NSExtensionActivationRule.NSExtensionActivationSupportsText = true;
   } else {
